@@ -8,7 +8,8 @@ namespace Multi_Tenant.Data
 {
     public partial class ClientDbContext : DbContext
     {
-        public ClientDbContext(DbContextOptions options) : base(options) { }
+        public ClientDbContext(DbContextOptions options) : base(options) {
+        }
         
         public DbSet<AccountDetail> AccountDetails { get; set; }
         public DbSet<AccountHolder> AccountHolders { get; set; }
@@ -47,7 +48,6 @@ namespace Multi_Tenant.Data
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }

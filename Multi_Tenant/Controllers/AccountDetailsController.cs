@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Any;
+using Multi_Tenant.ContextFactory;
 using Multi_Tenant.Data;
 using Multi_Tenant.Model;
 using Multi_Tenant.Models;
@@ -18,9 +19,9 @@ namespace Multi_Tenant.Controllers
     {
         private readonly ClientDbContext _context;
 
-        public AccountDetailsController(ClientDbContext context)
+        public AccountDetailsController(IDbConnectionFactory dbConnectionFactory)
         {
-            _context = context;
+            _context = dbConnectionFactory.GetDbContext();
         }
 
         // GET: api/AccountDetails

@@ -1,12 +1,15 @@
 ﻿using System.Data.Common;
 using System.Data;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Multi_Tenant.Data;
 
 namespace Multi_Tenant.ContextFactory
 {
     public class DbConnectionFactory : IDbConnectionFactory
     {
         private readonly IDictionary<string, string> _connectionDictionary;
+        private readonly IHttpContextAccessor httpContext = new HttpContextAccessor();
 
         public DbConnectionFactory(IDictionary<string, string> connectionDictionary)
         {
@@ -39,6 +42,15 @@ namespace Multi_Tenant.ContextFactory
             }
             // Return the connection.
             return connection;
+        }
+
+        public ClientDbContext GetDbContext()
+        {
+            string tenantId = httpContext.HttpContext.Request.Headers["tenantId"].First();
+            string connectionString = GetConnectionString(tenantId);
+            DbContextOptionsBuilder dbContextOptionsBuilder = new DbContextOptionsBuilder();
+            dbContextOptionsBuilder.UseSqlServer(connectionString);
+            return new ClientDbContext(dbContextOptionsBuilder.Options);
         }
     }
 

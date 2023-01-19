@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Multi_Tenant.Data;
+using System.Data;
 
 namespace Multi_Tenant.ContextFactory
 {
@@ -6,5 +8,6 @@ namespace Multi_Tenant.ContextFactory
     {
         string GetConnectionString(string connectionName);
         IDbConnection CreateDbConnection(string connectionString);
+        public ClientDbContext GetDbContext();
     }
 }

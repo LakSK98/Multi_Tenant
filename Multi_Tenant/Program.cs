@@ -15,6 +15,7 @@ builder.Services.AddDbContext<SystemDbContext>(options =>
 });
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddTransient<IDbConnectionStringFactory, DbConnectionStringFactory>();
 
 /*builder.Services.AddDbContext<testDbContext>((serviceProvider, dbContextBuilder) =>
 {
@@ -27,15 +28,21 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     dbContextBuilder.UseSqlServer(connectionString);
 });*/
 
-builder.Services.AddDbConnectionFactory(builder.Configuration.GetSection("ConnectionStrings").Get<Dictionary<string, string>>());
+var connectionStringFactory = builder.Services.BuildServiceProvider().GetRequiredService<IDbConnectionStringFactory>();
+//var httpContext = builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>();
 
-builder.Services.AddDbContext<ClientDbContext>((serviceProvider, options) =>
+
+//builder.Services.AddDbConnectionFactory(builder.Configuration.GetSection("ConnectionStrings").Get<Dictionary<string, string>>());
+
+builder.Services.AddDbConnectionFactory(connectionStringFactory.GetConnectionStrings().Result);
+
+/*builder.Services.AddDbContext<ClientDbContext>((serviceProvider, options) =>
 {
     var httpContext = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
     var tenantId = httpContext.Request.Headers["tenantId"].First();
     string conn = serviceProvider.GetRequiredService<IDbConnectionFactory>().GetConnectionString(tenantId);
     options.UseSqlServer(conn);
-});
+});*/
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
